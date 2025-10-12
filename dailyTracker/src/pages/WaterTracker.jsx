@@ -8,6 +8,7 @@ import IntakeHistory from '../components/IntakeHistory';
 import WaterAreaChart from '../components/WaterAreaChart';
 import CardsWaterChart from '../components/CardsWaterChart';
 import { useAuth } from '../context/AuthContext';
+import AIWaterTips from '../components/AIWaterTips';
 
 const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntakeHistoryData, setSnackBar, setSnackBarMsg }) => {
   const targetWaterRef = useRef(null);
@@ -67,10 +68,11 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntak
         <div className='tracker-layout flex-1 mt-5'>
           <AIWaterInput intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} onIntakeAnalyzed={handleIntakeAnalyzed} />
           <IntakeHistory intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}/>
+          <AIWaterTips intakeHistoryData={intakeHistoryData}/>
         </div>
         <div className='tracker-log flex-1'>
           <CardsWaterChart waterLevel={computedWaterml} targetWater={targetWater} />
-          <h2 className='font-semibold pt-2 text-white'>
+          <h2 className='font-semibold pt-2 text-white text-center'>
           {computedWaterml}/{targetWater} ml
         </h2>
           <WaterAreaChart intakeHistoryData={intakeHistoryData}/>

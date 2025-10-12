@@ -15,7 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 
@@ -41,8 +41,17 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const { currentUser } = useAuth();
-
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+      try {
+        await logout();
+        handleCloseUserMenu();
+        navigate('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    };
   return (
 
 
@@ -65,13 +74,9 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            HealthTracker Pro {currentUser && (
-              <span style={{ marginLeft: '8px', fontWeight: 400 }}>
-                ({currentUser.email})
-              </span>
-            )}
+            HealthTracker Pro 
           </Typography>
-
+            
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -106,6 +111,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
+          
           <Typography
             variant="h5"
             noWrap
@@ -138,6 +144,14 @@ function ResponsiveAppBar() {
               ))}
             </div>
           </Box>
+          <Box sx={{ flexGrow: 1 }} >
+              {currentUser && (
+              <span style={{ marginLeft: '8px', fontWeight: 400 }}>
+                ({currentUser.email})
+                <Button className="btn btn-primary" style={{marginRight: '8px', color: 'white'}} onClick={handleLogout} >Logout</Button>
+              </span>
+            )}
+            </Box>
         </Toolbar>
       </Container>
     </AppBar>

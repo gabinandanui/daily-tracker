@@ -7,7 +7,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-
+import { Link } from 'react-router-dom';
 const HydrationCard = ({ waterLevel, setWaterLevel, targetWater, intakeHistoryData }) => {
   return (
     <Card sx={{
@@ -20,12 +20,12 @@ const HydrationCard = ({ waterLevel, setWaterLevel, targetWater, intakeHistoryDa
           💧 Hydration
         </h2>
         <CardsWaterChart waterLevel={waterLevel} targetWater={targetWater} />
-        <h2 className='font-semibold pt-2 text-white'>
+        <h2 className='font-semibold pt-2 text-white text-center'>
           {waterLevel}/{targetWater} ml
         </h2>
       </CardContent>
       <CardActions>
-        <Button variant="contained" href="/water-tracker" sx={{ borderRadius: '12px', fontSize: '12px', padding: '4px 12px' }} >Add water</Button>
+        <Button variant="contained" component={Link} to="/water-tracker" sx={{ borderRadius: '12px', fontSize: '12px', padding: '4px 12px' }} >Add water</Button>
       </CardActions>
     </Card>
   )
