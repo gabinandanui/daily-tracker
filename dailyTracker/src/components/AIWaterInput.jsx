@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // This component takes a function `onIntakeAnalyzed` as a prop to pass the data up
-const AIWaterInput = ({ onIntakeAnalyzed }) => {
+const AIWaterInput = ({ onIntakeAnalyzed, setWaterLevel }) => {
   const [text, setText] = useState('1 tea cup 🍵');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

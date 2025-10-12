@@ -40,7 +40,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <HealthAndSafetyIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -115,7 +115,7 @@ function ResponsiveAppBar() {
             HealthTracker Pro
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, className: 'flex'}}>
-            <div className='flex flex-row gap-4 text-white'>
+            <div className='flex flex-row gap-7 text-white'>
               {pages.map((page, i) => (
                 <Link 
                   style={{ 'color': 'unset' }}
