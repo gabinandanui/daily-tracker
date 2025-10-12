@@ -16,6 +16,9 @@ import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+
 const pages = ['Dashboard', 'Food Tracker', 'Water Tracker', 'Medicine Tracker', 'Urine Tracker'];
 const icons = [DashboardCustomizeIcon, LocalDiningIcon, LocalDiningIcon, LocalDiningIcon, LocalDiningIcon];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -38,9 +41,12 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const { currentUser } = useAuth();
 
   return (
-    <AppBar position="sticky">
+
+
+    <AppBar position="sticky" sx={{ width: 'calc(100vw - 24px)' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <HealthAndSafetyIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -59,7 +65,11 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            HealthTracker Pro
+            HealthTracker Pro {currentUser && (
+              <span style={{ marginLeft: '8px', fontWeight: 400 }}>
+                ({currentUser.email})
+              </span>
+            )}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -114,14 +124,14 @@ function ResponsiveAppBar() {
           >
             HealthTracker Pro
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, className: 'flex'}}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, className: 'flex' }}>
             <div className='flex flex-row gap-7 text-white'>
               {pages.map((page, i) => (
-                <Link 
+                <Link
                   style={{ 'color': 'unset' }}
-                  className='flex text-white cursor-pointer' 
-                  to={`/${page.toLowerCase().replace(' ','-')}`} 
-                  key={page+i} 
+                  className='flex text-white cursor-pointer'
+                  to={`/${page.toLowerCase().replace(' ', '-')}`}
+                  key={page + i}
                   onClick={handleCloseNavMenu} >
                   {page}
                 </Link>
