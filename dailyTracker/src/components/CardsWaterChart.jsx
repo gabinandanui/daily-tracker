@@ -10,7 +10,7 @@ const settings = {
   hideLegend: true,
 };
 
-export default function CardsWaterChart({waterLevel, setWaterLevel, targetWater}) {
+export default function CardsWaterChart({waterLevel, targetWater}) {
   const newRemaining = targetWater - waterLevel;
 
   const newDrunkPercent = parseFloat((waterLevel / targetWater * 100).toFixed(1));

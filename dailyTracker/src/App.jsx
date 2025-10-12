@@ -11,6 +11,8 @@ import MedicineTracker from './pages/MedicineTracker';
 import UrineTracker from './pages/UrineTracker';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+
 function App() {
   const [targetWater, setTargetWater] = useState(()=> {
     try {
@@ -52,6 +54,7 @@ function App() {
   return (
     <>
     <ResponsiveAppBar />
+     <Box component="main" sx={{ p: 3 }}>
     <Snackbar
         open={snacBar}
         autoHideDuration={6000} // Snackbar will automatically close after 6 seconds
@@ -70,6 +73,7 @@ function App() {
       <Route path="/medicine-tracker" element={<MedicineTracker />} />
       <Route path="/urine-tracker" element={<UrineTracker />} />
     </Routes>
+    </Box>
     </>
   )
 }

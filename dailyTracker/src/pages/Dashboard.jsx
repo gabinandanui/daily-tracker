@@ -16,7 +16,7 @@ const Dashboard = ({waterLevel, setWaterLevel, targetWater, intakeHistoryData}) 
   return (
     <>
       <DashBoardIntro />
-      <div className=' flex flex-row gap-4'>
+      <div className=' flex flex-col md:flex-row gap-4'>
         <Card sx={{ minWidth: 275, borderRadius: 4, }}>
           <CardContent>
             <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>

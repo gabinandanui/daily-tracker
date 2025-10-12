@@ -19,7 +19,7 @@ const HydrationCard = ({ waterLevel, setWaterLevel, targetWater, intakeHistoryDa
         <h2 className='font-semibold text-white pb-5 text-left' gutterBottom sx={{ color: 'white', fontSize: 14 }}>
           💧 Hydration
         </h2>
-        <CardsWaterChart waterLevel={waterLevel} setWaterLevel={setWaterLevel} targetWater={targetWater} />
+        <CardsWaterChart waterLevel={waterLevel} targetWater={targetWater} />
         <h2 className='font-semibold pt-2 text-white'>
           {waterLevel}/{targetWater} ml
         </h2>
