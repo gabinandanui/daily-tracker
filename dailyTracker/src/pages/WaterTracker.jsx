@@ -7,8 +7,9 @@ import AIWaterInput from '../components/AIWaterInput';
 import IntakeHistory from '../components/IntakeHistory';
 import WaterAreaChart from '../components/WaterAreaChart';
 import CardsWaterChart from '../components/CardsWaterChart';
+import { useAuth } from '../context/AuthContext';
 
-const WaterTracker = ({ waterLevel, setWaterLevel, targetWater, setTargetWater, intakeHistoryData, setIntakeHistoryData, setSnacBar, setSnacBarMsg }) => {
+const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntakeHistoryData, setSnackBar, setSnackBarMsg }) => {
   const targetWaterRef = useRef(null);
   const targetIntakeWaterRef = useRef(null);
 
@@ -17,8 +18,8 @@ const WaterTracker = ({ waterLevel, setWaterLevel, targetWater, setTargetWater, 
     if (!isNaN(newTarge)) {
       setTargetWater(newTarge);
     }
-    setSnacBar(true);
-    setSnacBarMsg('Water Target Updated')
+    setSnackBar(true);
+    setSnackBarMsg('Water Target Updated')
   };
   const computedWaterml = React.useMemo(() => {
     return intakeHistoryData.reduce((total, item) => {
@@ -26,19 +27,31 @@ const WaterTracker = ({ waterLevel, setWaterLevel, targetWater, setTargetWater, 
     }, 0);
   }, [intakeHistoryData])
 
+  const { currentUser } = useAuth();
 
   const handleIntakeAnalyzed = (data) => {
     if (data && data.amount > 0) {
       console.log(`AI detected you drank ${data.amount}${data.unit}. Adding to total.`);
       // We use the same safe updater pattern here
       let currentData = data;
+      let transferSavedDate;
       console.log('====================================');
       console.log(data);
       console.log('====================================');
-      setIntakeHistoryData(prevData => [...prevData, currentData]);
-      setSnacBar(true);
-      setSnacBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`);
-      setWaterLevel(prevLevel => prevLevel + data.amount);
+      const historyKey = `intakeHistory_${currentUser.uid}`;
+      const targetKey = `targetWater_${currentUser.uid}`;
+      const savedHistory = localStorage.getItem(historyKey);
+      const savedTarget = localStorage.getItem(targetKey);
+      if(savedHistory && savedHistory !== '[]') {
+        transferSavedDate = JSON.parse(savedHistory);
+        transferSavedDate.push(data);
+      }
+      else {
+        transferSavedDate = [data];
+      }
+      setIntakeHistoryData(transferSavedDate);
+      setSnackBar(true);
+      setSnackBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`);
     }
   };
 
@@ -52,8 +65,8 @@ const WaterTracker = ({ waterLevel, setWaterLevel, targetWater, setTargetWater, 
       </div>
       <div className='flex flex-col md:flex-row gap-4 tracker-layout'>
         <div className='tracker-layout flex-1 mt-5'>
-          <AIWaterInput setWaterLevel={setWaterLevel} intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} onIntakeAnalyzed={handleIntakeAnalyzed} />
-          <IntakeHistory intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} setSnacBar={setSnacBar} setSnacBarMsg={setSnacBarMsg}/>
+          <AIWaterInput intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} onIntakeAnalyzed={handleIntakeAnalyzed} />
+          <IntakeHistory intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}/>
         </div>
         <div className='tracker-log flex-1'>
           <CardsWaterChart waterLevel={computedWaterml} targetWater={targetWater} />

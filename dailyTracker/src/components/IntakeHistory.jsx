@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import drinkWaterGif from '../assets/drink-water-animation.gif';
 import DeleteIcon from '@mui/icons-material/Delete';
-const IntakeHistory = ({ intakeHistoryData, setIntakeHistoryData, setSnacBar, setSnacBarMsg }) => {
+const IntakeHistory = ({ intakeHistoryData, setIntakeHistoryData, setSnackBar, setSnackBarMsg }) => {
   const getNutrientIcon = (type) => {
     const normalized = type.toLowerCase();
     if (normalized === 'calories') return '🔥';
@@ -18,8 +18,8 @@ const IntakeHistory = ({ intakeHistoryData, setIntakeHistoryData, setSnacBar, se
     const updatedDate = intakeHistoryData.filter((item) => item.id !== id);
     localStorage.setItem('intakeHistory', JSON.stringify(updatedDate));
     setIntakeHistoryData(updatedDate);
-    setSnacBar(true);
-    setSnacBarMsg('Intake deleted');
+    setSnackBar(true);
+    setSnackBarMsg('Intake deleted');
   };
   return (
     <>
