@@ -49,7 +49,7 @@ function App() {
       } catch (error) {
         console.error("Failed to parse data from localStorage", error);
       }
-    } 
+    }
   }, [currentUser]); // This effect re-runs only when the user changes
 
   // EFFECT 2: Save data to localStorage whenever it changes for the current user

@@ -17,9 +17,31 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async () => { /* ... (implementation in previous responses) */ };
-  const handleSignup = async () => { /* ... (implementation in previous responses) */ };
+// Handler for Email/Password Login
+  const handleLogin = async () => {
+    setError(''); // Clear previous errors
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Failed to log in. Please check your credentials.');
+    }
+  };
 
+  // Handler for Email/Password Sign Up
+  const handleSignup = async () => {
+    setError(''); // Clear previous errors
+    if (password.length < 6) {
+      setError('Password should be at least 6 characters');
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Failed to sign up. The email may already be in use.');
+    }
+  };
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
