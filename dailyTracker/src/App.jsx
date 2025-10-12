@@ -1,81 +1,109 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+// MUI Components
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+
+// Your App Components
 import ResponsiveAppBar from './components/NavBar';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard';
 import FoodTracker from './pages/FoodTracker';
 import WaterTracker from './pages/WaterTracker';
 import MedicineTracker from './pages/MedicineTracker';
 import UrineTracker from './pages/UrineTracker';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
+
+// Firebase Auth Components (These were missing)
+import { useAuth } from './context/AuthContext';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  const [targetWater, setTargetWater] = useState(()=> {
-    try {
-      const savedData = localStorage.getItem('targetWater');
-      return savedData ? JSON.parse(savedData) : 0;
-    } catch (error) {
-      console.error("Failed to parse targetWater from localStorage", error);
-      return [];
+  // Get the current user from the Auth Context
+  const { currentUser } = useAuth();
+
+  // State for Snackbar notifications
+  const [snackBar, setSnackBar] = useState(false);
+  const [snackBarMsg, setSnackBarMsg] = useState('');
+  
+  // State for user-specific data
+  const [targetWater, setTargetWater] = useState(2200); // Default value
+  const [intakeHistoryData, setIntakeHistoryData] = useState([]);
+
+  // --- User-Specific localStorage Logic ---
+
+  // EFFECT 1: Load data from localStorage when the user logs in
+  useEffect(() => {
+    if (currentUser) {
+      // Create user-specific keys for localStorage
+      const historyKey = `intakeHistory_${currentUser.uid}`;
+      const targetKey = `targetWater_${currentUser.uid}`;
+
+      try {
+        const savedHistory = localStorage.getItem(historyKey);
+        const savedTarget = localStorage.getItem(targetKey);
+        
+        setIntakeHistoryData(savedHistory ? JSON.parse(savedHistory) : []);
+        setTargetWater(savedTarget ? JSON.parse(savedTarget) : 2200);
+      } catch (error) {
+        console.error("Failed to parse data from localStorage", error);
+      }
+    } else {
+      // If user logs out, clear the data
+      setIntakeHistoryData([]);
+      setTargetWater(2200);
     }
-  });
-    const [snacBar, setSnacBar] = useState(false);
-    const [snacBarMsg, setSnacBarMsg] = useState('');
-      const handleClose = (event, reason) => {
+  }, [currentUser]); // This effect re-runs only when the user changes
+
+  // EFFECT 2: Save data to localStorage whenever it changes for the current user
+  useEffect(() => {
+    if (currentUser) {
+      const historyKey = `intakeHistory_${currentUser.uid}`;
+      const targetKey = `targetWater_${currentUser.uid}`;
+      
+      localStorage.setItem(historyKey, JSON.stringify(intakeHistoryData));
+      localStorage.setItem(targetKey, JSON.stringify(targetWater));
+    }
+  }, [intakeHistoryData, targetWater, currentUser]); // This effect runs when data changes
+
+  const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setSnacBar(false);
+    setSnackBar(false);
   };
-  useEffect(() => {
-    localStorage.setItem('targetWater', JSON.stringify(targetWater));
-  }, [targetWater]);
-  const [waterLevel, setWaterLevel] = useState(0);
-  // Initialize state by reading from localStorage
-  const [intakeHistoryData, setIntakeHistoryData] = useState(() => {
-    try {
-      const savedData = localStorage.getItem('intakeHistoryData');
-      return savedData ? JSON.parse(savedData) : [];
-    } catch (error) {
-      console.error("Failed to parse intake history from localStorage", error);
-      return [];
-    }
-  });
-
-  // save to localStorage whenever the history data changes
-  useEffect(() => {
-    localStorage.setItem('intakeHistoryData', JSON.stringify(intakeHistoryData));
-  }, [intakeHistoryData]); // This effect runs every time intakeHistoryData is updated
 
   return (
     <>
-    <ResponsiveAppBar />
-     <Box component="main" sx={{ p: 3 }}>
-    <Snackbar
-        open={snacBar}
-        autoHideDuration={6000} // Snackbar will automatically close after 6 seconds
-        onClose={handleClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Positioning the Snackbar
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          {snacBarMsg}
-        </Alert>
-      </Snackbar>
-    <Routes >
-      <Route path="/" element={<Dashboard intakeHistoryData ={intakeHistoryData} waterLevel={waterLevel} setWaterLevel={setWaterLevel} targetWater={targetWater}/>}  />
-      <Route path="/dashboard" element={<Dashboard intakeHistoryData ={intakeHistoryData} waterLevel={waterLevel} setWaterLevel={setWaterLevel} targetWater={targetWater}/>} />
-      <Route path="/food-tracker" element={<FoodTracker />} />
-      <Route path="/water-tracker" element={<WaterTracker setSnacBar={setSnacBar} setSnacBarMsg={setSnacBarMsg} waterLevel={waterLevel} setWaterLevel={setWaterLevel} intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} targetWater={targetWater} setTargetWater={setTargetWater} />} />
-      <Route path="/medicine-tracker" element={<MedicineTracker />} />
-      <Route path="/urine-tracker" element={<UrineTracker />} />
-    </Routes>
-    </Box>
+      <ResponsiveAppBar />
+      <Box component="main" sx={{ p: 3 }}>
+        <Snackbar
+          open={snackBar}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            {snackBarMsg}
+          </Alert>
+        </Snackbar>
+        
+        <Routes>
+          {/* Public route for logging in */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected routes wrapped in the ProtectedRoute component */}
+          <Route path="/" element={<ProtectedRoute><Dashboard intakeHistoryData={intakeHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard intakeHistoryData={intakeHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
+          <Route path="/food-tracker" element={<ProtectedRoute><FoodTracker /></ProtectedRoute>} />
+          <Route path="/water-tracker" element={<ProtectedRoute><WaterTracker setSnacBar={setSnackBar} setSnacBarMsg={setSnackBarMsg} intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} targetWater={targetWater} setTargetWater={setTargetWater} /></ProtectedRoute>} />
+          <Route path="/medicine-tracker" element={<ProtectedRoute><MedicineTracker /></ProtectedRoute>} />
+          <Route path="/urine-tracker" element={<ProtectedRoute><UrineTracker /></ProtectedRoute>} />
+        </Routes>
+      </Box>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
