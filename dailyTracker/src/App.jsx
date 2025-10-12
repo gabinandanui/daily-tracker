@@ -49,11 +49,7 @@ function App() {
       } catch (error) {
         console.error("Failed to parse data from localStorage", error);
       }
-    } else {
-      // If user logs out, clear the data
-      setIntakeHistoryData([]);
-      setTargetWater(2200);
-    }
+    } 
   }, [currentUser]); // This effect re-runs only when the user changes
 
   // EFFECT 2: Save data to localStorage whenever it changes for the current user
@@ -97,7 +93,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute><Dashboard intakeHistoryData={intakeHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard intakeHistoryData={intakeHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
           <Route path="/food-tracker" element={<ProtectedRoute><FoodTracker /></ProtectedRoute>} />
-          <Route path="/water-tracker" element={<ProtectedRoute><WaterTracker setSnacBar={setSnackBar} setSnacBarMsg={setSnackBarMsg} intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} targetWater={targetWater} setTargetWater={setTargetWater} /></ProtectedRoute>} />
+          <Route path="/water-tracker" element={<ProtectedRoute><WaterTracker setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg} intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} targetWater={targetWater} setTargetWater={setTargetWater} /></ProtectedRoute>} />
           <Route path="/medicine-tracker" element={<ProtectedRoute><MedicineTracker /></ProtectedRoute>} />
           <Route path="/urine-tracker" element={<ProtectedRoute><UrineTracker /></ProtectedRoute>} />
         </Routes>

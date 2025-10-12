@@ -8,53 +8,75 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // This component takes a function `onIntakeAnalyzed` as a prop to pass the data up
-const AIWaterInput = ({ onIntakeAnalyzed, setWaterLevel }) => {
+const AIWaterInput = ({ onIntakeAnalyzed }) => {
   const [text, setText] = useState('1 tea cup 🍵');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleAnalyzeClick = async () => {
-    if (!text.trim()) {
-      setError('Please enter some text.');
-      return;
-    }
+  if (!text.trim()) {
+    setError('Please enter some text.');
+    return;
+  }
+  
+  setLoading(true);
+  setError('');
+  
+  try {
+    console.log('🚀 Step 1: Preparing request...');
     
-    setLoading(true);
-    setError('');
+    const now = new Date();
+    const pad = (n) => n.toString().padStart(2, '0');
+    const hours = now.getHours();
+    const hours12 = hours % 12 === 0 ? 12 : hours % 12;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const localDateTime = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(hours12)}:${pad(now.getMinutes())} ${ampm}`;
+    
+    console.log('🚀 Step 2: Making API request...');
+    const response = await fetch('/api/analyzeWaterIntake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userInput: text, clientDateTime: localDateTime }),
+    });
+    
+    console.log('🚀 Step 3: Response received:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      headers: Object.fromEntries(response.headers.entries())
+    });
 
-    try {
-      const now = new Date();
-      const pad = (n) => n.toString().padStart(2, '0');
-      const hours = now.getHours();
-      const hours12 = hours % 12 === 0 ? 12 : hours % 12;
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      const localDateTime = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(hours12)}:${pad(now.getMinutes())} ${ampm}`;
-      // Call your OWN backend, not the Gemini API directly
-      const response = await fetch('/api/analyzeWaterIntake', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userInput: text, clientDateTime: localDateTime }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get a response from the server.');
-      }
-
-      const data = await response.json(); // e.g., { amount: 500, unit: "ml" }
-
-      // Pass the structured data to the parent component (WaterTracker.jsx)
-      onIntakeAnalyzed(data);
-      setText(''); // Clear the input field after success
-
-    } catch (err) {
-      setError('Sorry, something went wrong. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      console.log('❌ Step 3a: Response not OK, getting error...');
+      const errorText = await response.text();
+      console.error('❌ Error response:', errorText);
+      throw new Error(`Server error: ${response.status} - ${errorText}`);
     }
-  };
+
+    console.log('🚀 Step 4: Parsing JSON...');
+    const responseText = await response.text();
+    console.log('📄 Raw response:', responseText);
+    
+    const data = JSON.parse(responseText);
+    console.log('✅ Step 5: Parsed data:', data);
+    
+    console.log('🚀 Step 6: Calling parent callback...');
+    onIntakeAnalyzed(data);
+    console.log('✅ Step 7: Parent callback completed');
+    
+    console.log('🚀 Step 8: Clearing input...');
+    setText('');
+    console.log('✅ Step 9: All steps completed successfully!');
+    
+  } catch (err) {
+    console.error('🚨 Error occurred at step:', err.message);
+    console.error('🚨 Full error:', err);
+    setError('Sorry, something went wrong. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <Card variant="outlined" sx={{
