@@ -1,59 +1,86 @@
 import React, { useRef } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import InputBase from '@mui/material/InputBase';
 import Button from '@mui/material/Button';
+import AIWaterInput from '../components/AIWaterInput';
+import IntakeHistory from '../components/IntakeHistory';
+import WaterAreaChart from '../components/WaterAreaChart';
 
-const WaterTracker = ({waterLevel, setWaterLevel, targetWater, setTargetWater}) => {
- const targetWaterRef = useRef(0);
- const targetIntakeWaterRef = useRef(0);
+const WaterTracker = ({ waterLevel, setWaterLevel, targetWater, setTargetWater, intakeHistoryData, setIntakeHistoryData, setSnacBar, setSnacBarMsg }) => {
+  const targetWaterRef = useRef(null);
+  const targetIntakeWaterRef = useRef(null);
+
   const handleTargetWaterChange = () => {
-    console.log(targetWaterRef.current.value);
-    
-    setTargetWater(targetWaterRef.current.value);
+    const newTarge = parseInt(targetWaterRef.current.value, 10);
+    if (!isNaN(newTarge)) {
+      setTargetWater(newTarge);
+    }
+    setSnacBar(true);
+    setSnacBarMsg('Water Target Updated')
   };
   const handleIntakeWaterChange = () => {
-    console.log(targetIntakeWaterRef.current.value);
-    
-    setWaterLevel(targetIntakeWaterRef.current.value);
-  }
+    const amountToAdd = parseInt(targetIntakeWaterRef.current.value, 10);
+    if (!isNaN(amountToAdd)) {
+      setWaterLevel(prevLevel => prevLevel + amountToAdd);
+      targetIntakeWaterRef.current.value = '';
+    }
+  };
+
+
+  const handleIntakeAnalyzed = (data) => {
+    if (data && data.amount > 0) {
+      console.log(`AI detected you drank ${data.amount}${data.unit}. Adding to total.`);
+      // We use the same safe updater pattern here
+      let currentData = data;
+      console.log('====================================');
+      console.log(data);
+      console.log('====================================');
+      setIntakeHistoryData(prevData => [...prevData, currentData]);
+      setSnacBar(true);
+      setSnacBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`)
+    }
+  };
+
+
   return (
     <>
-      <div className='flex flex-col'>
+    
+      <div className='flex flex-col text-white text-left'>
         <h1>💧 Water Tracker</h1>
         <p>Stay hydrated and track your daily water intake</p>
       </div>
       <div className='flex flex-row gap-4 tracker-layout'>
-        <div className='tracker-layout flex-1'>
+        <div className='tracker-layout flex-1 mt-5'>
+          <AIWaterInput intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} onIntakeAnalyzed={handleIntakeAnalyzed} />
+
           <Card variant="outlined" sx={{
             minWidth: 275, borderRadius: 4, borderLeft: "4px solid #2196f3",
-            background: 'rgba(29, 78, 216, 0.15)'
+            background: 'rgba(29, 78, 216, 0.15)',
+            marginTop: '20px'
           }}>
             <CardContent className='flex flex-col'>
-              <Typography className='font-semibold pb-2 text-white text-left'>
+              <h2 className='font-semibold pb-2 text-white text-left'>
                 Daily Water Target (ml)
-              </Typography>
-              <div className="flex justify-between">
+              </h2>
+              <div className="flex flex-col justify-between">
 
-              <TextField
-                placeholder="Set daily water target"
-                type='number'
-                inputRef={targetWaterRef}
-                sx={{
-                  input: {
-                    color: 'white',
-                    width: '100%'
-                  },
-                }}
-                className="w-full bg-gray-800 px-3 py-2 rounded-md"
-              />
+                <TextField
+                  type='number'
+                  inputRef={targetWaterRef}
+                  placeholder={targetWater  || "Set daily water target" }
+                  sx={{
+                    input: {
+                      color: 'white',
+                      width: '100%'
+                    },
+                  }}
+                  className="w-full bg-gray-800 px-3 py-2 rounded-md"
+                />
                 <Button
                   variant="contained"
                   color="primary"
                   className='ml-auto mt-2 rounded-xs'
-                  sx={{ borderRadius: 999 }}
                   onClick={handleTargetWaterChange}
                 >
                   Update
@@ -63,40 +90,8 @@ const WaterTracker = ({waterLevel, setWaterLevel, targetWater, setTargetWater}) 
           </Card>
         </div>
         <div className='tracker-log flex-1'>
-          <Card variant="outlined" sx={{
-            minWidth: 275, borderRadius: 4, borderLeft: "4px solid #2196f3",
-            background: 'rgba(29, 78, 216, 0.15)'
-          }}>
-            <CardContent className='flex flex-col'>
-              <Typography className='font-semibold pb-2 text-white text-left'>
-                Add intake (ml)
-              </Typography>
-              <div className="flex justify-between">
-
-              <TextField
-                placeholder="Set your intake"
-                type='number'
-                inputRef={targetIntakeWaterRef}
-                sx={{
-                  input: {
-                    color: 'white',
-                    width: '100%'
-                  },
-                }}
-                className="w-full bg-gray-800 px-3 py-2 rounded-md"
-              />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className='ml-auto mt-2 rounded-xs'
-                  sx={{ borderRadius: 999 }}
-                  onClick={handleIntakeWaterChange}
-                >
-                  Add
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <IntakeHistory intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} setSnacBar={setSnacBar} setSnacBarMsg={setSnacBarMsg}/>
+          <WaterAreaChart />
         </div>
       </div>
     </>
