@@ -24,7 +24,7 @@ import {
   Lightbulb
 } from '@mui/icons-material';
 
-const AIWaterTips = ({ intakeHistoryData, targetWater = 2500 }) => {
+const AIWaterTips = ({ intakeWaterHistoryData, targetWater = 2500 }) => {
   const [tips, setTips] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,16 +32,16 @@ const AIWaterTips = ({ intakeHistoryData, targetWater = 2500 }) => {
 
   // Auto-analyze when data changes significantly
   useEffect(() => {
-    if (intakeHistoryData && intakeHistoryData.length > 0) {
-      if (!lastAnalyzed || intakeHistoryData.length !== lastAnalyzed) {
+    if (intakeWaterHistoryData && intakeWaterHistoryData.length > 0) {
+      if (!lastAnalyzed || intakeWaterHistoryData.length !== lastAnalyzed) {
         analyzeTips();
-        setLastAnalyzed(intakeHistoryData.length);
+        setLastAnalyzed(intakeWaterHistoryData.length);
       }
     }
-  }, [intakeHistoryData]);
+  }, [intakeWaterHistoryData]);
 
   const analyzeTips = async () => {
-    if (!intakeHistoryData || intakeHistoryData.length === 0) {
+    if (!intakeWaterHistoryData || intakeWaterHistoryData.length === 0) {
       setError('No intake data available for analysis');
       return;
     }
@@ -66,7 +66,7 @@ const AIWaterTips = ({ intakeHistoryData, targetWater = 2500 }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          intakeHistoryData,
+          intakeWaterHistoryData,
           targetWater,
           currentDateTime
         }),

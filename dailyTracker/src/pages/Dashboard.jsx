@@ -7,12 +7,12 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import DashBoardIntro from '../components/DashBoardIntro';
 import HydrationCard from '../components/HydrationCard';
-const Dashboard = ({waterLevel, setWaterLevel, targetWater, intakeHistoryData}) => {
+const Dashboard = ({waterLevel, setWaterLevel, targetWater, intakeWaterHistoryData}) => {
   const computedWaterml = React.useMemo(() => {
-    return intakeHistoryData.reduce((total, item) => {
+    return intakeWaterHistoryData.reduce((total, item) => {
       return total + item.amount;
     }, 0);
-  }, [intakeHistoryData])
+  }, [intakeWaterHistoryData])
   return (
     <>
       <DashBoardIntro />

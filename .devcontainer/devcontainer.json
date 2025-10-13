@@ -1,0 +1,18 @@
+// .devcontainer/devcontainer.json
+{
+  "name": "Dail Tracker",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {},
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint"]
+    }
+  },
+  "portsAttributes": {
+    "3000": {
+      "label": "Application",
+      "visibility": "public"
+    }
+  }
+}

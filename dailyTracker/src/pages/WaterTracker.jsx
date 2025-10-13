@@ -10,7 +10,7 @@ import CardsWaterChart from '../components/CardsWaterChart';
 import { useAuth } from '../context/AuthContext';
 import AIWaterTips from '../components/AIWaterTips';
 
-const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntakeHistoryData, setSnackBar, setSnackBarMsg }) => {
+const WaterTracker = ({ targetWater, setTargetWater, intakeWaterHistoryData, setintakeWaterHistoryData, setSnackBar, setSnackBarMsg }) => {
   const targetWaterRef = useRef(null);
   const targetIntakeWaterRef = useRef(null);
 
@@ -23,14 +23,14 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntak
     setSnackBarMsg('Water Target Updated')
   };
   const computedWaterml = React.useMemo(() => {
-    return intakeHistoryData.reduce((total, item) => {
+    return intakeWaterHistoryData.reduce((total, item) => {
       return total + item.amount;
     }, 0);
-  }, [intakeHistoryData])
+  }, [intakeWaterHistoryData])
 
   const { currentUser } = useAuth();
 
-  const handleIntakeAnalyzed = (data) => {
+  const handleIntakeWaterAnalyzed = (data) => {
     if (data && data.amount > 0) {
       console.log(`AI detected you drank ${data.amount}${data.unit}. Adding to total.`);
       // We use the same safe updater pattern here
@@ -50,7 +50,7 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntak
       else {
         transferSavedDate = [data];
       }
-      setIntakeHistoryData(transferSavedDate);
+      setintakeWaterHistoryData(transferSavedDate);
       setSnackBar(true);
       setSnackBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`);
     }
@@ -66,16 +66,16 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeHistoryData, setIntak
       </div>
       <div className='flex flex-col md:flex-row gap-4 tracker-layout'>
         <div className='tracker-layout flex-1 mt-5'>
-          <AIWaterInput intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} onIntakeAnalyzed={handleIntakeAnalyzed} />
-          <IntakeHistory intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}/>
-          <AIWaterTips intakeHistoryData={intakeHistoryData}/>
+          <AIWaterInput intakeWaterHistoryData={intakeWaterHistoryData} setintakeWaterHistoryData={setintakeWaterHistoryData} onIntakeAnalyzed={handleIntakeWaterAnalyzed} />
+          <IntakeHistory intakeWaterHistoryData={intakeWaterHistoryData} setintakeWaterHistoryData={setintakeWaterHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}/>
+          <AIWaterTips intakeWaterHistoryData={intakeWaterHistoryData}/>
         </div>
         <div className='tracker-log flex-1'>
           <CardsWaterChart waterLevel={computedWaterml} targetWater={targetWater} />
           <h2 className='font-semibold pt-2 text-white text-center'>
           {computedWaterml}/{targetWater} ml
         </h2>
-          <WaterAreaChart intakeHistoryData={intakeHistoryData}/>
+          <WaterAreaChart intakeWaterHistoryData={intakeWaterHistoryData}/>
           <Card variant="outlined" sx={{
             minWidth: 275, borderRadius: 4, borderLeft: "4px solid #2196f3",
             background: 'rgba(29, 78, 216, 0.15)',
