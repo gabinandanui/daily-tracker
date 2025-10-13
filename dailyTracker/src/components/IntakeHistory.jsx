@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import drinkWaterGif from '../assets/drink-water-animation.gif';
 import DeleteIcon from '@mui/icons-material/Delete';
-const IntakeHistory = ({ intakeHistoryData, setIntakeHistoryData, setSnackBar, setSnackBarMsg }) => {
+const IntakeHistory = ({ intakeWaterHistoryData, setintakeWaterHistoryData, setSnackBar, setSnackBarMsg }) => {
   const getNutrientIcon = (type) => {
     const normalized = type.toLowerCase();
     if (normalized === 'calories') return '🔥';
@@ -15,9 +15,9 @@ const IntakeHistory = ({ intakeHistoryData, setIntakeHistoryData, setSnackBar, s
     return '🥤';
   };
   const handleDelete = (id) => {
-    const updatedDate = intakeHistoryData.filter((item) => item.id !== id);
+    const updatedDate = intakeWaterHistoryData.filter((item) => item.id !== id);
     localStorage.setItem('intakeHistory', JSON.stringify(updatedDate));
-    setIntakeHistoryData(updatedDate);
+    setintakeWaterHistoryData(updatedDate);
     setSnackBar(true);
     setSnackBarMsg('Intake deleted');
   };
@@ -31,13 +31,13 @@ const IntakeHistory = ({ intakeHistoryData, setIntakeHistoryData, setSnackBar, s
         overflowY: 'auto'
       }}>
         <CardContent>
-          {intakeHistoryData && intakeHistoryData.length > 0 ? (
+          {intakeWaterHistoryData && intakeWaterHistoryData.length > 0 ? (
             <div>
               <h2 className='text-white text-left font-semibold'>Intake History</h2>
 
-              {intakeHistoryData.map((item, index) => (
+              {intakeWaterHistoryData.map((item, index) => (
                 <Card sx={{
-                  minWidth: 275, borderRadius: 4, border: "1px solid #2196f3",
+                  minWidth: 275, border: "1px solid #2196f3",
                   background: 'rgba(29, 78, 216, 0.15)',
                   borderRadius: '8px',
                   padding: '8px',

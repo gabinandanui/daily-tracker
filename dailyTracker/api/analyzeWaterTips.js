@@ -8,15 +8,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { intakeHistoryData, targetWater, currentDateTime } = req.body;
+  const { intakeWaterHistoryData, targetWater, currentDateTime } = req.body;
 
   console.log('Received intake data for analysis:', { 
-    historyCount: intakeHistoryData?.length, 
+    historyCount: intakeWaterHistoryData?.length, 
     targetWater, 
     currentDateTime 
   });
 
-  if (!intakeHistoryData || !Array.isArray(intakeHistoryData)) {
+  if (!intakeWaterHistoryData || !Array.isArray(intakeWaterHistoryData)) {
     return res.status(400).json({ error: 'Intake history data is required' });
   }
 
@@ -24,10 +24,10 @@ export default async function handler(req, res) {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // Calculate current stats
-    const totalConsumed = intakeHistoryData.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const hydrationValue = intakeHistoryData.reduce((sum, item) => sum + (item.hydration_value || item.amount || 0), 0);
-    const drinkTypes = intakeHistoryData.map(item => item.drink_type).join(', ');
-    const timePattern = intakeHistoryData.map(item => item.dateTime).join(', ');
+    const totalConsumed = intakeWaterHistoryData.reduce((sum, item) => sum + (item.amount || 0), 0);
+    const hydrationValue = intakeWaterHistoryData.reduce((sum, item) => sum + (item.hydration_value || item.amount || 0), 0);
+    const drinkTypes = intakeWaterHistoryData.map(item => item.drink_type).join(', ');
+    const timePattern = intakeWaterHistoryData.map(item => item.dateTime).join(', ');
 
     const prompt = `
 You are a hydration and wellness expert. Analyze this user's water intake data and provide personalized tips.
@@ -41,7 +41,7 @@ Current Status:
 - Current Time: ${currentDateTime}
 
 Intake History (JSON):
-${JSON.stringify(intakeHistoryData, null, 2)}
+${JSON.stringify(intakeWaterHistoryData, null, 2)}
 
 Provide analysis and tips in this JSON format:
 {
@@ -90,7 +90,7 @@ Focus on:
 
     // Add metadata
     tipsData.generated_at = new Date().toISOString();
-    tipsData.data_points = intakeHistoryData.length;
+    tipsData.data_points = intakeWaterHistoryData.length;
     tipsData.total_analyzed = totalConsumed;
 
     res.status(200).json(tipsData);

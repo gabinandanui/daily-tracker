@@ -8,7 +8,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
-const HydrationCard = ({ waterLevel, setWaterLevel, targetWater, intakeHistoryData }) => {
+const HydrationCard = ({ waterLevel, setWaterLevel, targetWater, intakeWaterHistoryData }) => {
   return (
     <Card sx={{
       minWidth: 275, borderRadius: 4, borderLeft: "4px solid #2196f3",

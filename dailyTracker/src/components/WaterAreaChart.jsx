@@ -11,11 +11,11 @@ const xLabels = [
   '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h', '21h', '22h', '23h'
 ];
 
-export default function WaterAreaChart({ intakeHistoryData }) {
+export default function WaterAreaChart({ intakeWaterHistoryData }) {
   const waterDataForChart = React.useMemo(() => {
     const hoursData = new Array(24).fill(0);
 
-    intakeHistoryData.forEach((item) => {
+    intakeWaterHistoryData.forEach((item) => {
       const timeArray = item.dateTime.split(' '); // ['12-10-2025', '12:28', 'PM']
       let hour = parseInt(timeArray[1].split(':')[0]);
       const ampm = timeArray[2];
@@ -28,7 +28,7 @@ export default function WaterAreaChart({ intakeHistoryData }) {
       hoursData[hour] += item.amount;
     })
     return hoursData;
-  }, [intakeHistoryData])
+  }, [intakeWaterHistoryData])
 
   return (
     <Box sx={{ width: '100%', p: 2, background: '#2c2c2c', borderRadius: 2, marginTop: '20px' }}>

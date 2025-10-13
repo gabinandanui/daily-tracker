@@ -26,10 +26,15 @@ function App() {
   // State for Snackbar notifications
   const [snackBar, setSnackBar] = useState(false);
   const [snackBarMsg, setSnackBarMsg] = useState('');
-  
+
   // State for user-specific data
   const [targetWater, setTargetWater] = useState(2200); // Default value
-  const [intakeHistoryData, setIntakeHistoryData] = useState([]);
+  const [intakeWaterHistoryData, setintakeWaterHistoryData] = useState([]);
+
+
+  // State for user-specific data for Food
+  const [targetCalories, setTargetCalories] = useState(2200); // Default value
+  const [intakeFoodHistoryData, setintakeFoodHistoryData] = useState([]);
 
   // --- User-Specific localStorage Logic ---
 
@@ -43,8 +48,8 @@ function App() {
       try {
         const savedHistory = localStorage.getItem(historyKey);
         const savedTarget = localStorage.getItem(targetKey);
-        
-        setIntakeHistoryData(savedHistory ? JSON.parse(savedHistory) : []);
+
+        setintakeWaterHistoryData(savedHistory ? JSON.parse(savedHistory) : []);
         setTargetWater(savedTarget ? JSON.parse(savedTarget) : 2200);
       } catch (error) {
         console.error("Failed to parse data from localStorage", error);
@@ -57,11 +62,11 @@ function App() {
     if (currentUser) {
       const historyKey = `intakeHistory_${currentUser.uid}`;
       const targetKey = `targetWater_${currentUser.uid}`;
-      
-      localStorage.setItem(historyKey, JSON.stringify(intakeHistoryData));
+
+      localStorage.setItem(historyKey, JSON.stringify(intakeWaterHistoryData));
       localStorage.setItem(targetKey, JSON.stringify(targetWater));
     }
-  }, [intakeHistoryData, targetWater, currentUser]); // This effect runs when data changes
+  }, [intakeWaterHistoryData, targetWater, currentUser]); // This effect runs when data changes
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -84,19 +89,19 @@ function App() {
             {snackBarMsg}
           </Alert>
         </Snackbar>
-        
+
         <Routes>
           {/* Public route for logging in */}
           <Route path="/login" element={<Login />} />
 
           {/* Protected routes wrapped in the ProtectedRoute component */}
-          <Route path="/" element={<ProtectedRoute><Dashboard intakeHistoryData={intakeHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard intakeHistoryData={intakeHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
-          <Route path="/food-tracker" element={<ProtectedRoute><FoodTracker /></ProtectedRoute>} />
-          <Route path="/water-tracker" element={<ProtectedRoute><WaterTracker setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg} intakeHistoryData={intakeHistoryData} setIntakeHistoryData={setIntakeHistoryData} targetWater={targetWater} setTargetWater={setTargetWater} /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Dashboard intakeWaterHistoryData={intakeWaterHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard intakeWaterHistoryData={intakeWaterHistoryData} targetWater={targetWater} /></ProtectedRoute>} />
+          <Route path="/food-tracker" element={<ProtectedRoute ><FoodTracker currentUser={currentUser} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg} intakeFoodHistoryData={intakeFoodHistoryData} setintakeFoodHistoryData={setintakeFoodHistoryData} targetCalories={targetCalories} setTargetCalories={setTargetCalories} /></ProtectedRoute>} />
+          <Route path="/water-tracker" element={<ProtectedRoute><WaterTracker setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg} intakeWaterHistoryData={intakeWaterHistoryData} setintakeWaterHistoryData={setintakeWaterHistoryData} targetWater={targetWater} setTargetWater={setTargetWater} /></ProtectedRoute>} />
           <Route path="/medicine-tracker" element={<ProtectedRoute><MedicineTracker /></ProtectedRoute>} />
           <Route path="/urine-tracker" element={<ProtectedRoute><UrineTracker /></ProtectedRoute>} />
-        </Routes>
+        </Routes>¯̦
       </Box>
     </>
   );
