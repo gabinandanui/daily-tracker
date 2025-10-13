@@ -124,6 +124,7 @@ const AIWaterTips = ({ intakeHistoryData, targetWater = 2500 }) => {
     );
   }
 
+  
   return (
     <Card sx={{ 
       minWidth: 275, 
