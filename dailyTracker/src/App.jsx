@@ -42,7 +42,7 @@ function App() {
   useEffect(() => {
     if (currentUser) {
       // Create user-specific keys for localStorage
-      const historyKey = `intakeHistory_${currentUser.uid}`;
+      const historyKey = `intakeWaterHistory_${currentUser.uid}`;
       const targetKey = `targetWater_${currentUser.uid}`;
 
       try {
@@ -60,7 +60,7 @@ function App() {
   // EFFECT 2: Save data to localStorage whenever it changes for the current user
   useEffect(() => {
     if (currentUser) {
-      const historyKey = `intakeHistory_${currentUser.uid}`;
+      const historyKey = `intakeWaterHistory_${currentUser.uid}`;
       const targetKey = `targetWater_${currentUser.uid}`;
 
       localStorage.setItem(historyKey, JSON.stringify(intakeWaterHistoryData));

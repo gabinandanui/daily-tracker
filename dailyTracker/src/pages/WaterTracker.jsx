@@ -39,7 +39,7 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeWaterHistoryData, set
       console.log('====================================');
       console.log(data);
       console.log('====================================');
-      const historyKey = `intakeHistory_${currentUser.uid}`;
+      const historyKey = `intakeWaterHistory_${currentUser.uid}`;
       const targetKey = `targetWater_${currentUser.uid}`;
       const savedHistory = localStorage.getItem(historyKey);
       const savedTarget = localStorage.getItem(targetKey);
