@@ -13,10 +13,25 @@ const FoodTracker = ({
 }) => {
   const handleIntakeFoodAnalyzed = (data) => {
     if (data && data.amount > 0) {
+      console.log(`AI detected you drank ${data.amount}${data.unit}. Adding to total.`);
+      // We use the same safe updater pattern here
+      let currentData = data;
+      let transferSavedDate;
       console.log('====================================');
       console.log(data);
       console.log('====================================');
-      
+      const historyKey = `intakeFoodHistory_${currentUser.uid}`;
+      const savedHistory = localStorage.getItem(historyKey);
+      if(savedHistory && savedHistory !== '[]') {
+        transferSavedDate = JSON.parse(savedHistory);
+        transferSavedDate.push(data);
+      }
+      else {
+        transferSavedDate = [data];
+      }
+      setintakeFoodHistoryData(transferSavedDate);
+      setSnackBar(true);
+      // setSnackBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`);
     }
   };
 

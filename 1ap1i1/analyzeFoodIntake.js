@@ -17,12 +17,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      generationConfig: {
-        temperature: 0, // Makes responses more deterministic
-      }
-    });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `
 You are a nutrition assistant. Using the user's local time: ${clientDateTime}, parse their text to identify all foods and amounts.
@@ -32,12 +27,11 @@ User's text: "${userInput}"
 Return ONLY a valid JSON array where each object has:
 - "id": unique identifier
 - "food_name": string
-- "calories": number
 - "quantity": number
 - "unit": string ("pieces","g","cup","ml")
 - "dateTime": string
 - "confidence": number (0.0–1.0)
-- "nutrition": { "protein": number, "carbs": number, "fats": number, "fiber": number }
+- "nutrition": { "calories": number, "protein": number, "carbs": number, "fats": number, "fiber": number }
 - "notes": string or null
 - "hydration_credit": number or null (for liquid foods)
 
@@ -48,24 +42,22 @@ Example output:
   {
     "id":"idli_1_20251013_2338",
     "food_name":"idli",
-    "calories":39,"
     "quantity":2,
     "unit":"pieces",
     "dateTime":"${clientDateTime}",
     "confidence":0.92,
-    "nutrition":{protein":1.5,"carbs":8,"fats":0.2,"fiber":0.5},
+    "nutrition":{"calories":39,"protein":1.5,"carbs":8,"fats":0.2,"fiber":0.5},
     "notes":"Assumed standard idli size",
     "hydration_credit":null
   },
   {
     "id":"sambhar_1_20251013_2338",
     "food_name":"sambhar",
-    "calories":92,
     "quantity":1,
     "unit":"cup",
     "dateTime":"08:30 AM",
     "confidence":0.88,
-    "nutrition":{"protein":4,"carbs":12,"fats":2,"fiber":3},
+    "nutrition":{"calories":92,"protein":4,"carbs":12,"fats":2,"fiber":3},
     "notes":"1 cup standard serving",
     "hydration_credit":200
   }
@@ -73,21 +65,9 @@ Example output:
 `;
 
     const result = await model.generateContent(prompt);
-    let responseText = await result.response.text();
-
-    console.log('Raw response:', responseText);
-
-    // Remove all backticks and the word "json"
-    let cleanedText = responseText
-      .replace(/```/g, '')
-      .replace(/json/g, '')
-      .trim();
-
-    console.log('Cleaned text:', cleanedText);
-
+    let text = await result.response.text();
+    const cleanedText = text.replace(/``````/g, '').trim();
     const items = JSON.parse(cleanedText);
-
-
 
     // Post-process hydration_credit for liquid units
     items.forEach(item => {
