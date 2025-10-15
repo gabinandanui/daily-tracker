@@ -1,7 +1,7 @@
 // src/pages/FoodTracker.jsx
-import React from 'react'
-import AIFoodInput from '../components/AIFoodInput';
-
+import React, {useState} from "react";
+import { foodDataByKey } from "../foodData";
+import AutoCompleteComponent from "../components/AutoCompleteComponent";
 const FoodTracker = ({
   setSnackBar,
   setSnackBarMsg,
@@ -9,24 +9,25 @@ const FoodTracker = ({
   intakeFoodHistoryData,
   setintakeFoodHistoryData,
   targetCalories,
-  setTargetCalories
+  setTargetCalories,
 }) => {
   const handleIntakeFoodAnalyzed = (data) => {
     if (data && data.amount > 0) {
-      console.log(`AI detected you drank ${data.amount}${data.unit}. Adding to total.`);
+      console.log(
+        `AI detected you drank ${data.amount}${data.unit}. Adding to total.`
+      );
       // We use the same safe updater pattern here
       let currentData = data;
       let transferSavedDate;
-      console.log('====================================');
+      console.log("====================================");
       console.log(data);
-      console.log('====================================');
+      console.log("====================================");
       const historyKey = `intakeFoodHistory_${currentUser.uid}`;
       const savedHistory = localStorage.getItem(historyKey);
-      if(savedHistory && savedHistory !== '[]') {
+      if (savedHistory && savedHistory !== "[]") {
         transferSavedDate = JSON.parse(savedHistory);
         transferSavedDate.push(data);
-      }
-      else {
+      } else {
         transferSavedDate = [data];
       }
       setintakeFoodHistoryData(transferSavedDate);
@@ -35,11 +36,22 @@ const FoodTracker = ({
     }
   };
 
+  const [footItem, setFootItem] = useState('');
+  const [measurement, setMeasurement] = useState('');
+  const handleFoodSelection = (data) => {
+    setFootItem(data)
+  }
+  const handleMeasurementSelection = (data) => {
+    setMeasurement(data)
+  }
   return (
-    <div className='flex flex-col text-white text-left'>
-      <h2 className='text-white text-left font-semibold'>Food Tracker</h2>
-      <p className='text-white text-left font-semibold'>Add food to track your intake</p>
-      <AIFoodInput handleIntakeFoodAnalyzed={handleIntakeFoodAnalyzed} />
+    <div className="flex flex-col text-white text-left">
+      <h2 className="text-white text-left font-semibold">Food Tracker</h2>
+      <p className="text-white text-left font-semibold">
+        Add food to track your intake
+      </p>
+       <AutoCompleteComponent optionsList={Object.keys(foodDataByKey)} label={'Select Food Item'} handleFoodSelection={handleFoodSelection}/>
+       <AutoCompleteComponent optionsList={foodDataByKey[footItem]?.measurements.map((e)=>{return(e.unit)})} handleMeasurementSelection={handleMeasurementSelection}/>
     </div>
   );
 };

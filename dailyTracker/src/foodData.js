@@ -1,5 +1,5 @@
 // src/data/foodData.js
-export const foodData = [
+const foodDataArray  = [
   {
     id: 1,
     name: "Roti/Chapati",
@@ -242,7 +242,17 @@ export const foodData = [
     ],
   },
 ];
+const createFoodKey = (name) => {
+  return name.toLowerCase().replace(/[\s/]/g, '_');
+};
 
+// Use reduce to transform the array into an object with food names as keys
+export const foodDataByKey = foodDataArray.reduce((acc, foodItem) => {
+  const key = createFoodKey(foodItem.name);
+  acc[key] = foodItem;
+  return acc;
+}, {});
+export const foodData = foodDataArray;
 export const categories = [
   "All",
   "Breads",
