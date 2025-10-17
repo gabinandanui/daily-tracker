@@ -39,12 +39,12 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeWaterHistoryData, set
       console.log('====================================');
       console.log(data);
       console.log('====================================');
-      const historyKey = `intakeWaterHistory_${currentUser.uid}`;
-      const targetKey = `targetWater_${currentUser.uid}`;
-      const savedHistory = localStorage.getItem(historyKey);
-      const savedTarget = localStorage.getItem(targetKey);
-      if(savedHistory && savedHistory !== '[]') {
-        transferSavedDate = JSON.parse(savedHistory);
+      const waterHistoryKey = `intakeWaterHistory_${currentUser.uid}`;
+      const waterTargetKey = `targetWater_${currentUser.uid}`;
+      const savedWaterHistory = localStorage.getItem(waterHistoryKey);
+      const savedWaterTarget = localStorage.getItem(waterTargetKey);
+      if(savedWaterHistory && savedWaterHistory !== '[]') {
+        transferSavedDate = JSON.parse(savedWaterHistory);
         transferSavedDate.push(data);
       }
       else {

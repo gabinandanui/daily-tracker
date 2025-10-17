@@ -1,5 +1,5 @@
 // src/pages/FoodTracker.jsx
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { foodDataByKey } from "../foodData";
 import AutoCompleteComponent from "../components/AutoCompleteComponent";
 import TextField from "@mui/material/TextField";
@@ -8,7 +8,6 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { useAuth } from "../context/AuthContext";
 const FoodTracker = ({
   setSnackBar,
   setSnackBarMsg,
@@ -18,29 +17,27 @@ const FoodTracker = ({
   targetCalories,
   setTargetCalories,
 }) => {
+
+    const foodQuantityRef = useRef(null);
+  
   const handleIntakeFoodAnalyzed = (data) => {
-    if (data && data.amount > 0) {
-      console.log(
-        `AI detected you drank ${data.amount}${data.unit}. Adding to total.`
-      );
+      console.log(data, currentUser);
+      
       // We use the same safe updater pattern here
       let currentData = data;
       let transferSavedDate;
-      console.log("====================================");
-      console.log(data);
-      console.log("====================================");
-      const historyKey = `intakeFoodHistory_${currentUser.uid}`;
-      const savedHistory = localStorage.getItem(historyKey);
-      if (savedHistory && savedHistory !== "[]") {
-        transferSavedDate = JSON.parse(savedHistory);
+
+      const waterHistoryKey = `intakeFoodHistory_${currentUser.uid}`;
+      const savedWaterHistory = localStorage.getItem(waterHistoryKey);
+      if (savedWaterHistory && savedWaterHistory !== "[]") {
+        transferSavedDate = JSON.parse(savedWaterHistory);
         transferSavedDate.push(data);
       } else {
         transferSavedDate = [data];
       }
       setintakeFoodHistoryData(transferSavedDate);
       setSnackBar(true);
-      // setSnackBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`);
-    }
+      setSnackBarMsg(`${data.quantity} ${data.measurement} of ${data.food_type} added`);
   };
 
   const [footItem, setFootItem] = useState("");
@@ -60,22 +57,24 @@ const FoodTracker = ({
       <p className="text-white text-left font-semibold">
         Add food to track your intake
       </p>
-      <AutoCompleteComponent
-        optionsList={Object.keys(foodDataByKey)}
-        label={"Select Food Item"}
-        handleSelect={handleFoodSelection}
-        value={footItem}
-      />
-      <AutoCompleteComponent
-        optionsList={foodDataByKey[footItem]?.measurements.map((e) => {
-          return e.unit;
-        })}
-        handleSelect={handleMeasurementSelection}
-        value={measurement}
-        measurementDisable={measurementDisable}
-      />
+      <div className="flex flex-col md:flex-row gap-4 tracker-layout">
+        <div className="flex-1 mt-5">
+          <AutoCompleteComponent
+            optionsList={Object.keys(foodDataByKey)}
+            label={"Select Food Item"}
+            handleSelect={handleFoodSelection}
+            value={footItem}
+          />
+          <AutoCompleteComponent
+            optionsList={foodDataByKey[footItem]?.measurements.map((e) => {
+              return e.unit;
+            })}
+            handleSelect={handleMeasurementSelection}
+            value={measurement}
+            measurementDisable={measurementDisable}
+          />
 
-      <Card
+          <Card
             variant="outlined"
             sx={{
               minWidth: 275,
@@ -86,51 +85,90 @@ const FoodTracker = ({
             }}
           >
             <CardContent className="flex flex-col">
-              <h2 className="font-semibold pb-2 text-white text-left">Select Quantity</h2>
-              <TextField 
-        label="Quantity"
-        variant="outlined"
-        type="number"
-        
-        disabled={measurementDisable}
-        sx={{
-            // Target the text inside the input field
-            "& .MuiInputBase-input": {
-              color: "white",
-            },
-            "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#747474", // Your desired disabled color
-            },
-            "& .MuiFormLabel-root.Mui-disabled": {
-              color: "#747474", // Your desired disabled color
-            },
-            // Target the label text
-            "& .MuiInputLabel-root": {
-              color: "#aab4c2", // A lighter grey for the label
-            },
-            // Target the label text when focused
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "#2196f3", // Blue color on focus
-            },
-            // Target the border of the input
-            "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(33, 150, 243, 0.5)",
-            },
-            // Change border on hover
-            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#2196f3",
-            },
-            // Change border when focused
-            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "#2196f3",
-              },
-            
-          }}
-        />
+              <h2 className="font-semibold pb-2 text-white text-left">
+                Select Quantity
+              </h2>
+              <TextField
+                label="Quantity"
+                variant="outlined"
+                type="number"
+                inputRef={foodQuantityRef}
+                disabled={measurementDisable}
+                sx={{
+                  // Target the text inside the input field
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                  },
+                  "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "#747474", // Your desired disabled color
+                    },
+                  "& .MuiFormLabel-root.Mui-disabled": {
+                    color: "#747474", // Your desired disabled color
+                  },
+                  // Target the label text
+                  "& .MuiInputLabel-root": {
+                    color: "#aab4c2", // A lighter grey for the label
+                  },
+                  // Target the label text when focused
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "#2196f3", // Blue color on focus
+                  },
+                  // Target the border of the input
+                  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "rgba(33, 150, 243, 0.5)",
+                  },
+                  // Change border on hover
+                  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "#2196f3",
+                    },
+                  // Change border when focused
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "#2196f3",
+                    },
+                }}
+              />
             </CardContent>
           </Card>
-      
+          <Button
+            variant="contained"
+            sx={{
+              borderRadius: "12px",
+              fontSize: "12px",
+              padding: "4px 12px",
+              marginTop: "10px",
+            }}
+            onClick={() => {
+              handleIntakeFoodAnalyzed({
+                food_type: footItem,
+                measurement,
+                quantity: foodQuantityRef.current.value,
+              });
+            }}
+          >
+            Submit{" "}
+          </Button>
+        </div>
+        <div className="flex-1 mt-5">
+          <Card>
+            <CardContent className="flex flex-col bg-transparent">
+              <h2 className="font-semibold pb-2 text-black text-left">
+                Nutrition Tracker
+              </h2>
+              {intakeFoodHistoryData.map((item, index) => (
+                <div key={index}>
+                  <p className="text-black text-left">
+                    {item.quantity} {item.measurement} of {item.food_type}
+                  </p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+        </div>
+      </div>
     </div>
   );
 };
