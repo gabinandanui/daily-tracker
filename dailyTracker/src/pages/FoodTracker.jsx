@@ -8,36 +8,64 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import IntakeHistory from "../components/IntakeHistory";
+import { useAuth } from '../context/AuthContext';
+
+
 const FoodTracker = ({
   setSnackBar,
   setSnackBarMsg,
-  currentUser,
   intakeFoodHistoryData,
   setintakeFoodHistoryData,
   targetCalories,
   setTargetCalories,
 }) => {
+  const foodQuantityRef = useRef(null);
+  const { currentUser } = useAuth();
 
-    const foodQuantityRef = useRef(null);
-  
   const handleIntakeFoodAnalyzed = (data) => {
-      console.log(data, currentUser);
-      
-      // We use the same safe updater pattern here
-      let currentData = data;
-      let transferSavedDate;
+    console.log(data, currentUser);
 
-      const waterHistoryKey = `intakeFoodHistory_${currentUser.uid}`;
-      const savedWaterHistory = localStorage.getItem(waterHistoryKey);
-      if (savedWaterHistory && savedWaterHistory !== "[]") {
-        transferSavedDate = JSON.parse(savedWaterHistory);
-        transferSavedDate.push(data);
-      } else {
-        transferSavedDate = [data];
-      }
-      setintakeFoodHistoryData(transferSavedDate);
-      setSnackBar(true);
-      setSnackBarMsg(`${data.quantity} ${data.measurement} of ${data.food_type} added`);
+    // We use the same safe updater pattern here
+    let currentData = data;
+    let transferSavedDate;
+    function nutrientCalculator(measurement, quantity, nutrient) {
+      let nutrientValue = 0;
+      foodDataByKey[data.food_name].measurements.forEach((e) => {
+        if (e.measurement === measurement) {
+          nutrientValue = e[nutrient];
+        }
+      });
+      return nutrientValue * quantity;
+    }
+    const foodHistoryKey = `intakeFoodHistory_${currentUser.uid}`;
+    const savedFoodHistory = localStorage.getItem(foodHistoryKey);
+    let structuredData = {
+      id: Date.now(),
+      quantity: data.quantity,
+      measurement: data.measurement,
+      food_name: data.food_name,
+      food_type:'fooditem',
+      dateTime: new Date().toLocaleString(),
+      food_info: {icon: '🍽️'},
+      nutrition:{calories: nutrientCalculator(data.measurement, data.quantity, "calories"),
+      protein: nutrientCalculator(data.measurement, data.quantity, "protein"),
+      carbs: nutrientCalculator(data.measurement, data.quantity, "carbs"),
+      fats: nutrientCalculator(data.measurement, data.quantity, "fats"),
+      fiber: nutrientCalculator(data.measurement, data.quantity, "fiber"),}
+    };
+    if (savedFoodHistory && savedFoodHistory !== "[]") {
+      transferSavedDate = JSON.parse(savedFoodHistory);
+      transferSavedDate.push(structuredData);
+    } else {
+      transferSavedDate = [structuredData];
+    }
+    setintakeFoodHistoryData(transferSavedDate);
+    setSnackBar(true);
+    setSnackBarMsg(
+      `${data.quantity} ${data.measurement} of ${data.food_name} added it is of ${structuredData.nutrition.calories} calories`
+    );
+    console.log(structuredData);
   };
 
   const [footItem, setFootItem] = useState("");
@@ -67,7 +95,7 @@ const FoodTracker = ({
           />
           <AutoCompleteComponent
             optionsList={foodDataByKey[footItem]?.measurements.map((e) => {
-              return e.unit;
+              return e.measurement;
             })}
             handleSelect={handleMeasurementSelection}
             value={measurement}
@@ -142,7 +170,7 @@ const FoodTracker = ({
             }}
             onClick={() => {
               handleIntakeFoodAnalyzed({
-                food_type: footItem,
+                food_name: footItem,
                 measurement,
                 quantity: foodQuantityRef.current.value,
               });
@@ -152,21 +180,11 @@ const FoodTracker = ({
           </Button>
         </div>
         <div className="flex-1 mt-5">
-          <Card>
-            <CardContent className="flex flex-col bg-transparent">
-              <h2 className="font-semibold pb-2 text-black text-left">
-                Nutrition Tracker
-              </h2>
-              {intakeFoodHistoryData.map((item, index) => (
-                <div key={index}>
-                  <p className="text-black text-left">
-                    {item.quantity} {item.measurement} of {item.food_type}
-                  </p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
+          <IntakeHistory 
+          food_type='food'
+          intakeHistoryData={intakeFoodHistoryData}
+           setintakeHistoryData={setintakeFoodHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}
+           />
         </div>
       </div>
     </div>

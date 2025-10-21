@@ -30,7 +30,7 @@ const AIWaterInput = ({ onIntakeAnalyzed }) => {
     const hours = now.getHours();
     const hours12 = hours % 12 === 0 ? 12 : hours % 12;
     const ampm = hours >= 12 ? 'PM' : 'AM';
-    const localDateTime = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(hours12)}:${pad(now.getMinutes())} ${ampm}`;
+    const localDateTime = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(hours12)}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ${ampm}`;
     
     console.log('🚀 Step 2: Making API request...');
     const response = await fetch('/api/analyzeWaterIntake', {

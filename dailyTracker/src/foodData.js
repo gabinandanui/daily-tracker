@@ -6,8 +6,8 @@ const foodDataArray  = [
     category: "Breads",
     measurements: [
       {
-        unit: "piece",
-        type: "unit",
+        measurement: "piece",
+        type: "measurement",
         calories: 102,
         protein: 3.6,
         carbs: 18,
@@ -22,7 +22,7 @@ const foodDataArray  = [
     category: "Rice",
     measurements: [
       {
-        unit: "katori",
+        measurement: "katori",
         type: "volume",
         calories: 205,
         protein: 4.2,
@@ -31,7 +31,7 @@ const foodDataArray  = [
         fiber: 0.6,
       },
       {
-        unit: "cup",
+        measurement: "cup",
         type: "volume",
         calories: 273,
         protein: 5.6,
@@ -40,7 +40,7 @@ const foodDataArray  = [
         fiber: 0.8,
       },
       {
-        unit: "grams",
+        measurement: "grams",
         type: "weight",
         caloriesPerGram: 1.37,
         proteinPerGram: 0.028,
@@ -56,7 +56,7 @@ const foodDataArray  = [
     category: "Lentils",
     measurements: [
       {
-        unit: "katori",
+        measurement: "katori",
         type: "volume",
         calories: 150,
         protein: 7,
@@ -65,7 +65,7 @@ const foodDataArray  = [
         fiber: 3,
       },
       {
-        unit: "cup",
+        measurement: "cup",
         type: "volume",
         calories: 200,
         protein: 9.3,
@@ -74,7 +74,7 @@ const foodDataArray  = [
         fiber: 4,
       },
       {
-        unit: "grams",
+        measurement: "grams",
         type: "weight",
         caloriesPerGram: 1.0,
         proteinPerGram: 0.047,
@@ -90,7 +90,7 @@ const foodDataArray  = [
     category: "Beverages",
     measurements: [
       {
-        unit: "cup (240ml)",
+        measurement: "cup (240ml)",
         type: "volume",
         calories: 149,
         protein: 8,
@@ -99,7 +99,7 @@ const foodDataArray  = [
         fiber: 0,
       },
       {
-        unit: "glass (200ml)",
+        measurement: "glass (200ml)",
         type: "volume",
         calories: 124,
         protein: 6.7,
@@ -108,7 +108,7 @@ const foodDataArray  = [
         fiber: 0,
       },
       {
-        unit: "ml",
+        measurement: "ml",
         type: "volume",
         caloriesPerMl: 0.62,
         proteinPerMl: 0.033,
@@ -124,8 +124,8 @@ const foodDataArray  = [
     category: "South Indian",
     measurements: [
       {
-        unit: "piece",
-        type: "unit",
+        measurement: "piece",
+        type: "measurement",
         calories: 168,
         protein: 4.1,
         carbs: 33,
@@ -140,8 +140,8 @@ const foodDataArray  = [
     category: "South Indian",
     measurements: [
       {
-        unit: "piece",
-        type: "unit",
+        measurement: "piece",
+        type: "measurement",
         calories: 58,
         protein: 2.1,
         carbs: 12,
@@ -156,8 +156,8 @@ const foodDataArray  = [
     category: "Snacks",
     measurements: [
       {
-        unit: "piece",
-        type: "unit",
+        measurement: "piece",
+        type: "measurement",
         calories: 252,
         protein: 4.8,
         carbs: 28,
@@ -172,7 +172,7 @@ const foodDataArray  = [
     category: "Non-Vegetarian",
     measurements: [
       {
-        unit: "katori",
+        measurement: "katori",
         type: "volume",
         calories: 185,
         protein: 22,
@@ -181,7 +181,7 @@ const foodDataArray  = [
         fiber: 1.5,
       },
       {
-        unit: "grams",
+        measurement: "grams",
         type: "weight",
         caloriesPerGram: 1.23,
         proteinPerGram: 0.147,
@@ -197,7 +197,7 @@ const foodDataArray  = [
     category: "Beverages",
     measurements: [
       {
-        unit: "cup (240ml)",
+        measurement: "cup (240ml)",
         type: "volume",
         calories: 39,
         protein: 0.9,
@@ -206,7 +206,7 @@ const foodDataArray  = [
         fiber: 0,
       },
       {
-        unit: "ml",
+        measurement: "ml",
         type: "volume",
         caloriesPerMl: 0.161,
         proteinPerMl: 0.004,
@@ -222,7 +222,7 @@ const foodDataArray  = [
     category: "Vegetables",
     measurements: [
       {
-        unit: "katori",
+        measurement: "katori",
         type: "volume",
         calories: 132,
         protein: 2.8,
@@ -231,7 +231,7 @@ const foodDataArray  = [
         fiber: 2.4,
       },
       {
-        unit: "grams",
+        measurement: "grams",
         type: "weight",
         caloriesPerGram: 0.88,
         proteinPerGram: 0.019,

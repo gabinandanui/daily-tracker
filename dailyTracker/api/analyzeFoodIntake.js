@@ -435,7 +435,7 @@ export default async function handler(req, res) {
       .join('\n');
 
     const prompt = `
-You are a nutrition assistant. Using the user's local time: ${clientDateTime}, parse their text to identify all foods and amounts.
+You are a nutrition assistant. Using the user's local time: ${clientDateTime}, parse their text to identify all foods and quantitys.
 
 **IMPORTANT: For nutrition values, use ONLY these standardized values:**
 ${nutritionReference}
@@ -449,7 +449,7 @@ Return ONLY a valid JSON array where each object has:
 - "food_name": string (standardized name)
 - "calories": number (per serving, not per 100g)
 - "quantity": number
-- "unit": string ("pieces","g","cup","ml")
+- "measurement": string ("pieces","g","cup","ml")
 - "dateTime": string
 - "confidence": number (0.0–1.0, use 0.95+ for reference foods)
 - "nutrition": { "protein": number, "carbs": number, "fats": number, "fiber": number }
@@ -463,7 +463,7 @@ Example output:
     "food_name":"idli",
     "calories":58,
     "quantity":2,
-    "unit":"pieces",
+    "measurement":"pieces",
     "dateTime":"${clientDateTime}",
     "confidence":0.95,
     "nutrition":{"protein":2.1,"carbs":12,"fats":0.2,"fiber":0.8},
@@ -510,9 +510,9 @@ Example output:
       }
 
       // Handle hydration credit
-      const liquidUnits = ['ml', 'cup'];
-      if (liquidUnits.includes(item.unit)) {
-        const factor = item.unit === 'cup' ? 240 : 1;
+      const liquidmeasurements = ['ml', 'cup'];
+      if (liquidmeasurements.includes(item.measurement)) {
+        const factor = item.measurement === 'cup' ? 240 : 1;
         item.hydration_credit = item.quantity * factor;
       } else {
         item.hydration_credit = null;

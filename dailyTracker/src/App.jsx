@@ -18,6 +18,7 @@ import UrineTracker from "./pages/UrineTracker";
 import { useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CaloriesCalculator from "./pages/CaloriesCalculator";
 
 function App() {
   // Get the current user from the Auth Context
@@ -130,6 +131,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard
+                currentUser={currentUser}
                   intakeWaterHistoryData={intakeWaterHistoryData}
                   targetWater={targetWater}
                 />
@@ -141,6 +143,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard
+                currentUser={currentUser} 
                   intakeWaterHistoryData={intakeWaterHistoryData}
                   targetWater={targetWater}
                 />
@@ -152,7 +155,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <FoodTracker
-                  currentUser={currentUser}
                   setSnackBar={setSnackBar}
                   setSnackBarMsg={setSnackBarMsg}
                   intakeFoodHistoryData={intakeFoodHistoryData}
@@ -160,6 +162,14 @@ function App() {
                   targetCalories={targetCalories}
                   setTargetCalories={setTargetCalories}
                 />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/calories-calculator"
+            element={
+              <ProtectedRoute>
+                <CaloriesCalculator />
               </ProtectedRoute>
             }
           />

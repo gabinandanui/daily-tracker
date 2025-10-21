@@ -24,15 +24,15 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeWaterHistoryData, set
   };
   const computedWaterml = React.useMemo(() => {
     return intakeWaterHistoryData.reduce((total, item) => {
-      return total + item.amount;
+      return total + item.quantity;
     }, 0);
   }, [intakeWaterHistoryData])
 
   const { currentUser } = useAuth();
 
   const handleIntakeWaterAnalyzed = (data) => {
-    if (data && data.amount > 0) {
-      console.log(`AI detected you drank ${data.amount}${data.unit}. Adding to total.`);
+    if (data && data.quantity > 0) {
+      console.log(`AI detected you drank ${data.quantity}${data.measurement}. Adding to total.`);
       // We use the same safe updater pattern here
       let currentData = data;
       let transferSavedDate;
@@ -52,7 +52,7 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeWaterHistoryData, set
       }
       setintakeWaterHistoryData(transferSavedDate);
       setSnackBar(true);
-      setSnackBarMsg(`${data.amount} ${data.unit} of ${data.drink_type} added`);
+      setSnackBarMsg(`${data.quantity} ${data.measurement} of ${data.food_name} added`);
     }
   };
 
@@ -67,7 +67,7 @@ const WaterTracker = ({ targetWater, setTargetWater, intakeWaterHistoryData, set
       <div className='flex flex-col md:flex-row gap-4 tracker-layout'>
         <div className='tracker-layout flex-1 mt-5'>
           <AIWaterInput intakeWaterHistoryData={intakeWaterHistoryData} setintakeWaterHistoryData={setintakeWaterHistoryData} onIntakeAnalyzed={handleIntakeWaterAnalyzed} />
-          <IntakeHistory intakeWaterHistoryData={intakeWaterHistoryData} setintakeWaterHistoryData={setintakeWaterHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}/>
+          <IntakeHistory food_type='water' intakeHistoryData={intakeWaterHistoryData} setintakeHistoryData={setintakeWaterHistoryData} setSnackBar={setSnackBar} setSnackBarMsg={setSnackBarMsg}/>
           <AIWaterTips intakeWaterHistoryData={intakeWaterHistoryData}/>
         </div>
         <div className='tracker-log flex-1'>
