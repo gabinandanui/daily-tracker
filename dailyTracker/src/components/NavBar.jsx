@@ -19,7 +19,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 
-const pages = ['Dashboard', 'Food Tracker', 'Water Tracker', 'Medicine Tracker', 'Urine Tracker'];
+const pages = ['Dashboard', 'Calories Calculator','Food Tracker', 'Water Tracker', 'Medicine Tracker', 'Urine Tracker'];
 const icons = [DashboardCustomizeIcon, LocalDiningIcon, LocalDiningIcon, LocalDiningIcon, LocalDiningIcon];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 

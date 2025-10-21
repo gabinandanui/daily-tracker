@@ -25,7 +25,7 @@ export default function WaterAreaChart({ intakeWaterHistoryData }) {
       if (ampm === 'AM' && hour === 12) {
         hour = 0;
       }
-      hoursData[hour] += item.amount;
+      hoursData[hour] += item.quantity;
     })
     return hoursData;
   }, [intakeWaterHistoryData])

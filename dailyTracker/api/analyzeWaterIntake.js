@@ -29,9 +29,10 @@ User's text: "${userInput}"
 
 Return ONLY a valid JSON object with these keys:
 - "id": a unique identifier
-- "drink_type": one of: water, tea, coffee, juice, milk, soda, other
-- "amount": number (in ml)
-- "unit": "ml"
+- "food_name": one of: water, tea, coffee, juice, milk, soda, other
+- "quantity": number (in ml)
+- "measurement": "ml"
+- "food_type": "wateritem"
 - "dateTime": string (use "${clientDateTime}" if no specific time in text)
 - "confidence": number (0.0–1.0) your certainty
 - "nutrition": {
@@ -42,7 +43,7 @@ Return ONLY a valid JSON object with these keys:
     "fiber": number
   }
 - "hydration_value": number (ml adjusted by hydration factor)
-- "drink_info": {
+- "food_info": {
     "name": string,
     "icon": string,
     "hydration_factor": number
@@ -59,14 +60,15 @@ Use per-100ml nutritional values from your database.
 Example response for “I drank a tea cup”:
 \`\`\`json
 {
-  "drink_type":"tea",
-  "amount":100,
-  "unit":"ml",
+  "food_name":"tea",
+  food_type:'wateritem',
+  "quantity":100,
+  "measurement":"ml",
   "dateTime":"${clientDateTime}",
   "confidence":0.95,
   "nutrition":{"calories":16,"protein":0.4,"carbs":2.6,"fats":0.5,"fiber":0},
   "hydration_value":85,
-  "drink_info":{"name":"Tea","icon":"🍵","hydration_factor":0.85},
+  "food_info":{"name":"Tea","icon":"🍵","hydration_factor":0.85},
   "notes":"Assumed 1 tea cup = 100ml"
 }
 \`\`\`
@@ -79,7 +81,7 @@ Example response for “I drank a tea cup”:
     // Clean and parse the response
     const cleanedText = responseText.replace(/```json\n|\n```/g, '').trim();
     const jsonData = JSON.parse(cleanedText);
-     // If model returned "other" for drink_type with non-zero amount, treat as error
+     // If model returned "other" for food_name with non-zero quantity, treat as error
     const foods = ['dosa','idly','sandwich','pizza','burger','rice'];
     const lowerInput = userInput.toLowerCase();
     const foodDetected = foods.find(f => lowerInput.includes(f));

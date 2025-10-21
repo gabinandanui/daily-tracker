@@ -10,7 +10,7 @@ import HydrationCard from '../components/HydrationCard';
 const Dashboard = ({waterLevel, setWaterLevel, targetWater, intakeWaterHistoryData}) => {
   const computedWaterml = React.useMemo(() => {
     return intakeWaterHistoryData.reduce((total, item) => {
-      return total + item.amount;
+      return total + item.quantity;
     }, 0);
   }, [intakeWaterHistoryData])
   return (
