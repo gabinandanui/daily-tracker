@@ -1,10 +1,14 @@
 import React from "react";
-import { Alert, Card, CardContent, Container, Typography } from "@mui/material";
+import { Alert, Card, CardContent, CardHeader, Container, Typography } from "@mui/material";
 import deficitVsSurplus from "../assets/deficit-vs-surplus.png";
 import bmr from "../assets/bmr.png";
 import deficit from "../assets/deficit.png"
 import GridInfoCard from "../components/GridInfoCard";
+import { useForm } from 'react-hook-form';
 const CaloriesCalculator = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const onSubmit = data => console.log(data);
+  console.log(errors);
   return (
     <>
       <Container
@@ -191,7 +195,37 @@ const CaloriesCalculator = () => {
         <Typography variant="h2" gutterBottom align="center">
           BMR & TDEE Calculator
         </Typography>
+        <Card sx={{ my: 5 }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+        <CardHeader title="Calculate Your BMR & TDEE" />
+                  <CardContent>
+                    <Stack spacing={3}>
+                      
+                    </Stack>
+                  </CardContent>
+      <input {...register("Gender", { required: true })} type="radio" value="Male" />
+      <input {...register("Gender", { required: true })} type="radio" value="Female" />
+      <input type="number" placeholder="Age" {...register("Age", {required: true, min: 0})} />
+      <input type="number" placeholder="Weight" {...register("Weight", {required: true, min: 0})} />
+      <input type="number" placeholder="Height" {...register("Height", {required: true, min: 0})} />
+      <select {...register("activityLevel", { required: true })}>
+        <option value="1.2">Sedentary (Little or no exercise)</option>
+        <option value="1.375">Lightly Active (1-3 days/week)</option>
+        <option value="1.55">Moderately Active (3-5 days/week)</option>
+        <option value="1.725">Very Active (6-7 days/week)</option>
+        <option value="1.9">Extra Active (intense daily)</option>
+      </select>
+      <input type="number" placeholder="Target Weight" {...register("targetWeight", {required: true})} />
+      <select {...register("lossRate", { required: true })}>
+        <option value="0.25">0.25 kg (slow)</option>
+        <option value="0.5"> 0.5 kg (recommended)</option>
+        <option value="0.75"> 0.75 kg (moderate)</option>
+        <option value="1"> 1 kg (aggressive)</option>
+      </select>
 
+      <input type="submit" />
+    </form>
+        </Card>
         
       </Container>
     </>
