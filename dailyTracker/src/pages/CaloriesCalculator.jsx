@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent, Container, Typography } from "@mui/material";
 import deficitVsSurplus from "../assets/deficit-vs-surplus.png";
 import bmr from "../assets/bmr.png";
+import GridInfoCard from "../components/GridInfoCard";
 const CaloriesCalculator = () => {
   return (
 
@@ -14,7 +15,7 @@ const CaloriesCalculator = () => {
     marginLeft: "-50vw", 
     marginRight: "-50vw",
     borderRadius: 0,  }}>
-      <Typography variant="h3" gutterBottom align="center">
+      <Typography variant="h2" gutterBottom align="center">
         Understanding Your Metabolism: BMR & TDEE
       </Typography>
       <Typography align="center" color="text.white" mb={4}>
@@ -28,7 +29,7 @@ const CaloriesCalculator = () => {
       </Card>
     </Container>
     <Container maxWidth="lg" sx={{ py: 4 }} style={{ borderRadius: "12px", marginTop: "24px",border: "1px solid rgba(119, 124, 124, 0.2)" }}>
-      <Typography variant="h3" gutterBottom align="center">
+      <Typography variant="h2" gutterBottom align="center">
         Basal Metabolic Rate (BMR)
       </Typography>
       <Typography align="center" color="text.white" mb={4}>
@@ -39,6 +40,42 @@ const CaloriesCalculator = () => {
           <img src={bmr} alt="Deficit vs Surplus" />
         </CardContent>
       </Card>
+      <Typography variant="h3" gutterBottom align="center">
+        Basal Metabolic Rate (BMR)
+      </Typography>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <GridInfoCard
+          icon="faLungs"
+          title=" Breathing & Circulation"
+          percentage="60%"
+          description="Essential respiratory and cardiovascular functions"
+        />
+        <GridInfoCard
+          icon="faLungs"
+          title=" Breathing & Circulation"
+          percentage="60%"
+          description="Essential respiratory and cardiovascular functions"
+        />
+        <GridInfoCard
+          icon="faLungs"
+          title=" Breathing & Circulation"
+          percentage="60%"
+          description="Essential respiratory and cardiovascular functions"
+        />
+        <GridInfoCard
+          icon="faLungs"
+          title=" Breathing & Circulation"
+          percentage="60%"
+          description="Essential respiratory and cardiovascular functions"
+        />
+        <GridInfoCard
+          icon="faLungs"
+          title=" Breathing & Circulation"
+          percentage="60%"
+          description="Essential respiratory and cardiovascular functions"
+        />
+      </div>
     </Container>
     </>
   );
