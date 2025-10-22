@@ -1,7 +1,8 @@
 import React from "react";
-import { Card, CardContent, Container, Typography } from "@mui/material";
+import { Alert, Card, CardContent, Container, Typography } from "@mui/material";
 import deficitVsSurplus from "../assets/deficit-vs-surplus.png";
 import bmr from "../assets/bmr.png";
+import deficit from "../assets/deficit.png"
 import GridInfoCard from "../components/GridInfoCard";
 const CaloriesCalculator = () => {
   return (
@@ -139,6 +140,59 @@ const CaloriesCalculator = () => {
             description="Non-exercise activity thermogenesis"
           />
         </div>
+      </Container>
+      <Container
+        maxWidth={false}
+        sx={{ py: 4 }}
+        style={{
+          borderRadius: "12px",
+          marginTop: "24px",
+          border: "1px solid rgba(119, 124, 124, 0.2)",
+        }}
+      >
+        <Typography variant="h2" gutterBottom align="center">
+          Creating a Calorie Deficit
+        </Typography>
+        <Typography align="center" color="text.white" mb={4}>
+          Weight loss occurs when you consume fewer calories than your TDEE. Your body uses stored fat for energy.
+        </Typography>
+        <Card sx={{ borderRadius: 12, maxWidth: 500, margin: "0 auto" }}>
+          <CardContent>
+            <img src={deficit} alt="Deficit vs Surplus" />
+          </CardContent>
+        </Card>
+        <Alert severity="warning" variant="outlined" className="mt-5">
+          <ul className="text-white">
+            <li><strong>Recommended deficit:</strong> 300-500 calories/day</li>
+            <li><strong>Expected loss:</strong> 0.5-1 kg per week
+            </li>
+            <li><strong>Minimum intake:</strong> Women 1,200-1,500 cal, Men 1,500-1,800 cal
+            </li>
+          </ul>
+        </Alert>
+      </Container>
+
+      <Container
+        maxWidth={false}
+        sx={{ py: 4 }}
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(29, 78, 216, 0.15) 0%, rgba(8, 145, 178, 0.15) 100%)",
+          width: "calc(100vw - 4px)",
+          maxWidth: "100vw",
+          position: "relative",
+          left: "50%",
+          right: "50%",
+          marginLeft: "-50vw",
+          marginRight: "-50vw",
+          borderRadius: 0,
+        }}
+      >
+        <Typography variant="h2" gutterBottom align="center">
+          BMR & TDEE Calculator
+        </Typography>
+
+        
       </Container>
     </>
   );
