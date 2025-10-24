@@ -1,14 +1,64 @@
-import React from "react";
-import { Alert, Card, CardContent, CardHeader, Container, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Alert, Card, CardContent, CardHeader, Container, Typography, Stack, Box, TextField, Radio, RadioGroup, FormControl, FormControlLabel, FormLabel, Select, MenuItem, InputLabel, Button, CardActions } from "@mui/material";
 import deficitVsSurplus from "../assets/deficit-vs-surplus.png";
 import bmr from "../assets/bmr.png";
 import deficit from "../assets/deficit.png"
 import GridInfoCard from "../components/GridInfoCard";
-import { useForm } from 'react-hook-form';
+import { LocalFireDepartment, FitnessCenter, Scale } from "@mui/icons-material";
 const CaloriesCalculator = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const onSubmit = data => console.log(data);
-  console.log(errors);
+  const [results, setResults] = useState(null);
+  const caloriesPerKgFat = 7700;
+  const minCal = { male: 1500, female: 1200 };
+  const calculateBMR = ({gender, weight, height, age}) => {
+    if (gender === 'male') {
+      return 10 * weight + 6.25 * height - 5 * age + 5;
+    } else {
+      return 10 * weight + 6.25 * height - 5 * age - 161;
+    }
+  }
+  const calculateResult = (values) => {
+   const bmr = calculateBMR(values);
+    const tdee = bmr * values.activityLevel;
+    const weeklyDeficit = values.weeklyLossRate * caloriesPerKgFat;
+    const dailyTarget = tdee - weeklyDeficit / 7;
+    const totalLoss = values.weight - values.targetWeight;
+    const weeksToGoal = totalLoss / values.weeklyLossRate;
+    console.log('====================================');
+    console.log(totalLoss / values.weeklyLossRate);
+    console.log('====================================');
+    return { bmr, tdee, weeklyDeficit, dailyTarget, weeksToGoal };
+  }
+  const initialValues = {
+    gender: '',
+    age: '',
+    weight: '',
+    height: '',
+    activityLevel: '',
+    targetWeight: '',
+    weeklyLossRate: ''
+  }
+  const [formValues, setFormValues] = useState(initialValues);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const formJsone = Object.fromEntries(formData.entries());
+    console.log(formJsone);
+    setResults(calculateResult(formJsone));
+  }
+
+  const activityLevels = [
+    { value: "", label: 'Choose an activity level' },
+    { value: "1.2", label: 'Sedentary (Little or no exercise)' },
+    { value: "1.375", label: 'Lightly Active (1-3 days/week)' },
+    { value: "1.55", label: 'Moderately Active (3-5 days/week)' },
+    { value: "1.725", label: 'Very Active (6-7 days/week)' },
+    { value: "1.9", label: 'Extra Active (intense daily)' },
+  ];
   return (
     <>
       <Container
@@ -196,37 +246,137 @@ const CaloriesCalculator = () => {
           BMR & TDEE Calculator
         </Typography>
         <Card sx={{ my: 5 }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-        <CardHeader title="Calculate Your BMR & TDEE" />
-                  <CardContent>
-                    <Stack spacing={3}>
-                      
-                    </Stack>
-                  </CardContent>
-      <input {...register("Gender", { required: true })} type="radio" value="Male" />
-      <input {...register("Gender", { required: true })} type="radio" value="Female" />
-      <input type="number" placeholder="Age" {...register("Age", {required: true, min: 0})} />
-      <input type="number" placeholder="Weight" {...register("Weight", {required: true, min: 0})} />
-      <input type="number" placeholder="Height" {...register("Height", {required: true, min: 0})} />
-      <select {...register("activityLevel", { required: true })}>
-        <option value="1.2">Sedentary (Little or no exercise)</option>
-        <option value="1.375">Lightly Active (1-3 days/week)</option>
-        <option value="1.55">Moderately Active (3-5 days/week)</option>
-        <option value="1.725">Very Active (6-7 days/week)</option>
-        <option value="1.9">Extra Active (intense daily)</option>
-      </select>
-      <input type="number" placeholder="Target Weight" {...register("targetWeight", {required: true})} />
-      <select {...register("lossRate", { required: true })}>
-        <option value="0.25">0.25 kg (slow)</option>
-        <option value="0.5"> 0.5 kg (recommended)</option>
-        <option value="0.75"> 0.75 kg (moderate)</option>
-        <option value="1"> 1 kg (aggressive)</option>
-      </select>
+          <form id="myForm" onSubmit={handleSubmit}>
+            <CardHeader title="Calculate Your BMR & TDEE" />
+            <CardContent>
+              <Stack spacing={3}>
+                <h2>Step 1: Personal Information</h2>
+                <FormControl fullWidth margin="normal">
+                  <FormLabel id="demo-row-radio-buttons-group-label">Gender</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="gender"
+                    value={formValues.gender}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                    <FormControlLabel value="female" control={<Radio />} label="Female" />
 
-      <input type="submit" />
-    </form>
+                  </RadioGroup>
+                </FormControl>
+                <Box sx={{ display: 'flex', alignItems: 'center', '& > :not(style)': { m: 1 } }}>
+                  <TextField
+                    helperText="Please enter your age in years"
+                    id="age"
+                    label="Age"
+                    type="number"
+                    name="age"
+                    value={formValues.age}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    helperText="Please enter your weigth in kg "
+                    id="weight"
+                    label="Weigth in kg"
+                    type="number"
+                    name="weight"
+                    value={formValues.weight}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    helperText="Please enter you height in cm"
+                    id="height"
+                    label="Height"
+                    type="number"
+                    name="height"
+                    value={formValues.height}
+                    onChange={handleChange}
+                  />
+                </Box>
+                <h2>Step 2: Activity Level</h2>
+                <FormControl fullWidth>
+                  <InputLabel id="activity-level-label">Activity Level</InputLabel>
+                  <Select
+                    labelId="activity-level-label"
+                    id="activity-level-select"
+                    label="Activity Level"
+                    name="activityLevel"
+                    value={formValues.activityLevel}
+                    onChange={handleChange}
+                  >
+                    {activityLevels.map(opt => (
+                      <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <h2>Step 3: Weight Loss Goals</h2>
+                <FormControl fullWidth margin="normal">
+                  <TextField
+                    helperText="Please enter target weight in kg"
+                    id="targetWeight"
+                    label="Target Weight"
+                    type="number"
+                    name="targetWeight"
+                    value={formValues.targetWeight}
+                    onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl fullWidth>
+                  <InputLabel id="activity-level-label">Desired Weekly Loss Rate</InputLabel>
+                  <Select label="Weekly Loss Rate" name="weeklyLossRate" value={formValues.weeklyLossRate} onChange={handleChange}>
+                    <MenuItem value="">Choose loss rate</MenuItem>
+                    <MenuItem value="0.25">0.25 kg (slow)</MenuItem>
+                    <MenuItem value="0.5">0.5 kg (recommended)</MenuItem>
+                    <MenuItem value="0.75">0.75 kg (moderate)</MenuItem>
+                    <MenuItem value="1.0">1 kg (aggressive)</MenuItem>
+                  </Select>
+                </FormControl>
+
+              </Stack>
+            </CardContent>
+
+
+            <CardActions sx={{ justifyContent: 'end', mb: 1 }}>
+              <Button variant="outlined" type="reset" onClick={() => setFormValues(initialValues)}>
+                Reset
+              </Button>
+              <Button variant="contained" type="submit">
+                Calculate
+              </Button>
+            </CardActions>
+          </form>
         </Card>
-        
+        {/* Results Display */}
+      {results && (
+        <Card sx={{ my: 5 }}>
+          <CardHeader title="Your Results" />
+          <CardContent>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <LocalFireDepartment color="error" />
+              <Typography><b>BMR:</b> {results.bmr.toFixed(0)} calories/day</Typography>
+              <FitnessCenter color="primary" />
+              <Typography><b>TDEE:</b> {results.tdee.toFixed(0)} calories/day</Typography>
+              <Scale color="success" />
+              <Typography><b>Target Calories:</b> {results.dailyTarget.toFixed(0)} calories/day</Typography>
+            </Stack>
+            <Typography sx={{ mt: 2 }}>
+              Estimated weeks to goal: <b>{results.weeksToGoal.toFixed(1)}</b>
+            </Typography>
+            {(results.dailyTarget < minCal['gender']) && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                Daily calories below safe minimum. Please raise your goal or consult a doctor.
+              </Alert>
+            )}
+            {(results.weeklyDeficit / 7 > 1000) && (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                Your daily deficit is above recommended maximum (1000 cal/day)!
+              </Alert>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       </Container>
     </>
   );
